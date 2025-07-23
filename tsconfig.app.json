@@ -20,7 +20,7 @@
     "noUnusedParameters": false,
     "noImplicitAny": false,
     "noFallthroughCasesInSwitch": false,
-    "types": ["@react-three/fiber/patch-jest"],
+    
 
     "baseUrl": ".",
     "paths": {
