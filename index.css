@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Culinary Digital Theatre Design System */
+@layer base {
+  :root {
+    /* Core restaurant theme colors */
+    --background: 15 15% 8%;
+    --foreground: 45 30% 92%;
+
+    --card: 20 20% 12%;
+    --card-foreground: 45 30% 92%;
+
+    --popover: 20 20% 12%;
+    --popover-foreground: 45 30% 92%;
+
+    --primary: 45 95% 68%;
+    --primary-foreground: 15 15% 8%;
+
+    --secondary: 25 25% 18%;
+    --secondary-foreground: 45 30% 92%;
+
+    --muted: 25 25% 18%;
+    --muted-foreground: 45 15% 65%;
+
+    --accent: 35 80% 55%;
+    --accent-foreground: 15 15% 8%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 45 30% 92%;
+
+    --border: 25 25% 18%;
+    --input: 25 25% 18%;
+    --ring: 45 95% 68%;
+
+    --radius: 0.75rem;
+
+    /* Restaurant-specific colors */
+    --gold: 45 95% 68%;
+    --gold-dark: 40 85% 55%;
+    --burgundy: 355 65% 35%;
+    --burgundy-light: 355 65% 45%;
+    --charcoal: 15 15% 8%;
+    --charcoal-light: 20 20% 12%;
+    --warm-white: 45 30% 92%;
+    --warm-gray: 45 15% 65%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--charcoal)), hsl(var(--charcoal-light)));
+    --gradient-gold: linear-gradient(135deg, hsl(var(--gold)), hsl(var(--gold-dark)));
+    --gradient-overlay: linear-gradient(180deg, transparent, hsl(var(--charcoal) / 0.8));
+
+    /* Shadows */
+    --shadow-luxury: 0 20px 40px hsl(var(--charcoal) / 0.3);
+    --shadow-card: 0 10px 30px hsl(var(--charcoal) / 0.2);
+    --shadow-glow: 0 0 30px hsl(var(--gold) / 0.3);
+
+    /* Animations */
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .light {
+    --background: 45 30% 98%;
+    --foreground: 15 15% 8%;
+    --card: 0 0% 100%;
+    --card-foreground: 15 15% 8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-inter;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-cormorant;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--charcoal));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--gold));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--gold-dark));
+  }
+}
+
+@layer components {
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.8s ease-out;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Luxury button variant */
+  .btn-luxury {
+    @apply bg-gradient-to-r from-gold to-gold-dark text-charcoal font-semibold px-8 py-4 rounded-lg;
+    @apply transition-all duration-300 hover:scale-105 hover:shadow-glow;
+    @apply border border-gold/20;
+  }
+
+  /* Menu card hover effect */
+  .menu-card {
+    @apply transition-all duration-500 hover:scale-105 hover:shadow-luxury;
+    @apply bg-card/50 backdrop-blur-sm border border-gold/10;
+  }
+
+  /* Parallax container */
+  .parallax {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Glow effect */
+  .glow {
+    filter: drop-shadow(0 0 20px hsl(var(--gold) / 0.3));
+  }
+
+  /* Luxury text gradient */
+  .text-luxury {
+    background: linear-gradient(135deg, hsl(var(--gold)), hsl(var(--gold-dark)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
