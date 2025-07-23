@@ -4,8 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
-import MenuAnalysis from "./pages/MenuAnalysis";
 import NotFound from "./pages/NotFound";
+import { AiRecipeGeneratorPage } from "./pages/AiRecipeGeneratorPage";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +17,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/menu-analysis" element={<MenuAnalysis />} />
+            <Route path="/ai-recipe-generator" element={<AiRecipeGeneratorPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
