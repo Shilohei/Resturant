@@ -12,10 +12,14 @@
 export const PEXELS_IMAGE_KEYWORDS = {
   // Hero/Banner Sections
   hero: [
-    'modern restaurant interior design',
-    'gourmet food plating close-up',
-    'elegant dining table setting',
-    'abstract culinary art',
+    'luxury restaurant interior fine dining',
+    'elegant restaurant atmosphere warm lighting',
+    'upscale dining room sophisticated ambiance',
+    'modern restaurant interior design premium',
+    'fine dining restaurant elegant setting',
+    'gourmet restaurant sophisticated interior',
+    'high-end restaurant beautiful lighting',
+    'restaurant kitchen professional chef cooking',
   ],
   
   // About/Team Sections  

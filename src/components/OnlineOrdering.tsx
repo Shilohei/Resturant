@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ShoppingCart, Plus, Minus, Star, Clock, Leaf, Flame, MapPin, CreditCard, Truck } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import PexelsImage from "@/components/PexelsImage";
 
 interface MenuItem {
   id: string;
@@ -260,29 +261,28 @@ export const OnlineOrdering = () => {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
-                <Card className="bg-charcoal-light border-warm-gray/20 hover:border-gold/50 transition-all duration-300 group overflow-hidden">
-                  {item.image && (
-                    <div className="relative overflow-hidden">
-                      <img 
-                        src={item.image} 
-                        alt={item.name}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      {item.featured && (
-                        <Badge className="absolute top-2 left-2 bg-gold text-charcoal">
-                          <Star size={12} className="mr-1" />
-                          Featured
-                        </Badge>
-                      )}
-                      <div className="absolute top-2 right-2 flex space-x-1">
-                        {item.dietary.map((diet) => (
-                          <div key={diet} className="bg-charcoal/80 p-1 rounded">
-                            {getDietaryIcon(diet)}
-                          </div>
-                        ))}
-                      </div>
+                <Card className="bg-charcoal-light border-warm-gray/20 hover:border-gold/50 transition-all duration-300 group flex flex-col overflow-hidden">
+                  <div className="relative h-48 w-full overflow-hidden">
+                    <PexelsImage
+                      query={`${item.name} food`}
+                      fallbackType="food"
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      alt={item.name}
+                    />
+                    {item.featured && (
+                      <Badge className="absolute top-2 left-2 bg-gold text-charcoal z-10">
+                        <Star size={12} className="mr-1" />
+                        Featured
+                      </Badge>
+                    )}
+                    <div className="absolute top-2 right-2 flex space-x-1 z-10">
+                      {item.dietary.map((diet) => (
+                        <div key={diet} className="bg-charcoal/80 p-1 rounded">
+                          {getDietaryIcon(diet)}
+                        </div>
+                      ))}
                     </div>
-                  )}
+                  </div>
                   
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, TrendingUp, Clock, MapPin, Thermometer, Star, Brain, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import PexelsImage from "@/components/PexelsImage";
 
 interface RecommendationContext {
   timeOfDay: 'breakfast' | 'lunch' | 'dinner' | 'late-night';
@@ -421,7 +422,15 @@ export const SmartRecommendations = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                 >
-                  <Card className="bg-charcoal border-warm-gray/20 hover:border-gold/50 transition-all duration-300 relative overflow-hidden">
+                  <Card className="bg-charcoal border-warm-gray/20 hover:border-gold/50 transition-all duration-300 relative overflow-hidden group">
+                    <div className="relative h-48 w-full overflow-hidden">
+                      <PexelsImage
+                        query={`${item.name} gourmet food`}
+                        fallbackType="food"
+                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        alt={item.name}
+                      />
+                    </div>
                     {/* Confidence indicator */}
                     <div className="absolute top-2 right-2 z-10">
                       <Badge 
@@ -437,7 +446,7 @@ export const SmartRecommendations = () => {
                     <CardHeader>
                       <CardTitle className="text-cream flex items-center justify-between">
                         <span>{item.name}</span>
-                        <span className="text-gold font-bold">${item.price}</span>
+                        <span className="text-gold font-bold">NRS {item.price}</span>
                       </CardTitle>
                       <p className="text-warm-gray text-sm">{item.description}</p>
                     </CardHeader>

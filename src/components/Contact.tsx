@@ -154,9 +154,9 @@ export const Contact = () => {
                     <div>
                       <h4 className="font-semibold text-gold mb-2">Address</h4>
                       <p className="text-warm-gray">
-                        123 Culinary Avenue<br />
-                        Downtown District<br />
-                        New York, NY 10001
+                        Lazimpat
+                        <br />
+                        Kathmandu City
                       </p>
                     </div>
                     

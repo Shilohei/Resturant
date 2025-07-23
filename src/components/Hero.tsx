@@ -80,7 +80,7 @@ export const Hero = () => {
       </div>
       
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-charcoal/90 via-charcoal/70 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-charcoal/95 via-charcoal/85 to-charcoal/60" />
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center lg:text-left">
@@ -167,12 +167,6 @@ export const Hero = () => {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-gold animate-bounce">
-        <div className="w-6 h-10 border-2 border-gold rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-gold rounded-full mt-2 animate-pulse"></div>
-        </div>
-      </div>
       {isArViewerOpen && <ARMenuPreview />}
     </section>
   );

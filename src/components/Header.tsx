@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, MapPin } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -61,18 +62,18 @@ export const Header = () => {
             >
               Gallery
             </button>
+            <Link 
+              to="/ai-recipe-generator"
+              className="text-warm-white hover:text-gold transition-colors duration-300"
+            >
+              AI Recipe Generator
+            </Link>
             <button 
               onClick={() => scrollToSection('contact')}
               className="text-warm-white hover:text-gold transition-colors duration-300"
             >
               Contact
             </button>
-            <a 
-              href="/menu-analysis"
-              className="text-warm-white hover:text-gold transition-colors duration-300"
-            >
-              Menu Analysis
-            </a>
           </nav>
 
           {/* Contact Info & CTA */}
@@ -128,18 +129,18 @@ export const Header = () => {
               >
                 Gallery
               </button>
+              <Link 
+                to="/ai-recipe-generator"
+                className="text-warm-white hover:text-gold transition-colors duration-300 text-left py-2"
+              >
+                AI Recipe Generator
+              </Link>
               <button 
                 onClick={() => scrollToSection('contact')}
                 className="text-warm-white hover:text-gold transition-colors duration-300 text-left py-2"
               >
                 Contact
               </button>
-              <a 
-                href="/menu-analysis"
-                className="text-warm-white hover:text-gold transition-colors duration-300 text-left py-2 block"
-              >
-                Menu Analysis
-              </a>
               <div className="flex flex-col space-y-2 pt-4 border-t border-gold/20">
                 <div className="flex items-center space-x-2 text-warm-gray">
                   <Phone size={16} />

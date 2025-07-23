@@ -84,7 +84,7 @@ export const Web3Integration = () => {
   const cryptoPayments: CryptoPayment[] = [
     { symbol: "BTC", name: "Bitcoin", rate: 43250.00, icon: "₿", network: "Bitcoin" },
     { symbol: "ETH", name: "Ethereum", rate: 2680.50, icon: "Ξ", network: "Ethereum" },
-    { symbol: "USDC", name: "USD Coin", rate: 1.00, icon: "$", network: "Ethereum" },
+    { symbol: "USDC", name: "USD Coin", rate: 1.00, icon: "NRS", network: "Ethereum" },
     { symbol: "MATIC", name: "Polygon", rate: 0.85, icon: "◊", network: "Polygon" }
   ];
 
@@ -197,7 +197,7 @@ export const Web3Integration = () => {
                         {loyaltyTokens.balance} {loyaltyTokens.symbol}
                       </div>
                       <div className="text-warm-gray text-sm">
-                        ≈ ${loyaltyTokens.value}
+                        ≈ NRS {loyaltyTokens.value}
                       </div>
                     </div>
                   )}
@@ -273,7 +273,7 @@ export const Web3Integration = () => {
                       <div>
                         <div className="text-warm-gray text-sm">Traditional Price</div>
                         <div className="text-xl font-cormorant font-bold text-warm-white">
-                          ${item.price}
+                          NRS {item.price}
                         </div>
                       </div>
                       <div className="text-right">
@@ -328,7 +328,7 @@ export const Web3Integration = () => {
                         </div>
                         <div className="bg-charcoal/30 rounded-lg p-4 text-center">
                           <div className="text-2xl font-bold text-green-300">
-                            ${loyaltyTokens.value}
+                            NRS {loyaltyTokens.value}
                           </div>
                           <div className="text-warm-gray text-sm">USD Value</div>
                         </div>
@@ -396,7 +396,7 @@ export const Web3Integration = () => {
                         </div>
                         <div className="text-right">
                           <div className="text-blue-300 font-semibold">
-                            ${crypto.rate.toLocaleString()}
+                            NRS {crypto.rate.toLocaleString()}
                           </div>
                           <div className="text-warm-gray text-sm">
                             {crypto.symbol}

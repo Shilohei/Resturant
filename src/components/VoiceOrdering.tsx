@@ -143,11 +143,11 @@ export const VoiceOrdering = () => {
     if (foundItem) {
       if (lowerCommand.includes("add") || lowerCommand.includes("order") || lowerCommand.includes("want")) {
         setCart(prev => [...prev, foundItem]);
-        response = `Added ${foundItem.name} to your order for $${foundItem.price}. Anything else?`;
+        response = `Added ${foundItem.name} to your order for NRS ${foundItem.price}. Anything else?`;
         action = "add_to_cart";
         confidence = 95;
       } else if (lowerCommand.includes("price") || lowerCommand.includes("cost")) {
-        response = `The ${foundItem.name} costs $${foundItem.price}.`;
+        response = `The ${foundItem.name} costs NRS ${foundItem.price}.`;
         action = "price_inquiry";
         confidence = 90;
       } else {
@@ -167,7 +167,7 @@ export const VoiceOrdering = () => {
         response = "Your cart is empty. Would you like to see our menu?";
       } else {
         const total = cart.reduce((sum, item) => sum + item.price, 0);
-        response = `You have ${cart.length} item${cart.length > 1 ? 's' : ''} in your cart for a total of $${total}.`;
+        response = `You have ${cart.length} item${cart.length > 1 ? 's' : ''} in your cart for a total of NRS ${total}.`;
       }
       action = "cart_inquiry";
       confidence = 90;
@@ -326,13 +326,13 @@ export const VoiceOrdering = () => {
                   {cart.map((item, index) => (
                     <div key={`${item.id}-${index}`} className="flex justify-between items-center p-3 bg-charcoal/30 rounded-lg">
                       <span className="text-warm-white">{item.name}</span>
-                      <span className="text-gold font-semibold">${item.price}</span>
+                      <span className="text-gold font-semibold">NRS {item.price}</span>
                     </div>
                   ))}
                   <div className="border-t border-gold/20 pt-3 flex justify-between items-center">
                     <span className="text-lg font-semibold text-warm-white">Total:</span>
                     <span className="text-xl font-bold text-gold">
-                      ${cart.reduce((sum, item) => sum + item.price, 0)}
+                      NRS {cart.reduce((sum, item) => sum + item.price, 0)}
                     </span>
                   </div>
                 </div>

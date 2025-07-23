@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Brain, Sparkles, TrendingUp, Clock, Thermometer, Leaf, Mic, Eye, Zap } from "lucide-react";
+import { recipeApiService } from "@/services/recipeApi";
+import { RecipeRequest, Recipe } from "@/types/recipe.types";
 
 interface Recommendation {
   id: string;
@@ -48,65 +50,62 @@ export const AIRecommendations = () => {
   const [isListening, setIsListening] = useState(false);
   const [voiceQuery, setVoiceQuery] = useState("");
   const [emotionDetected, setEmotionDetected] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Simulate advanced AI recommendations with multiple data sources
   useEffect(() => {
-    const generateAdvancedRecommendations = () => {
-      const contextualRecommendations: Recommendation[] = [
-        {
-          id: "ai-premium-1",
-          name: "Molecular Truffle Experience",
-          description: "Deconstructed truffle risotto with edible gold leaf and aromatic smoke presentation",
-          price: 45,
-          reason: "Perfect for your adventurous mood and premium dining preference",
-          confidence: 96,
-          tags: ["molecular", "premium", "instagram-worthy", "signature"],
-          estimatedTime: 35,
-          mood: "adventurous",
-          weatherOptimized: true,
-          aiGenerated: true
-        },
-        {
-          id: "ai-wellness-2",
-          name: "Adaptogenic Superfood Bowl",
-          description: "Quinoa bowl with ashwagandha-infused dressing, microgreens, and healing mushrooms",
-          price: 28,
-          reason: "Trending wellness dish optimized for your health-conscious profile",
-          confidence: 92,
-          tags: ["superfood", "wellness", "trending", "energy-boosting"],
-          estimatedTime: 20,
-          mood: "health-focused",
-          weatherOptimized: false,
-          aiGenerated: true
-        },
-        {
-          id: "ai-comfort-3",
-          name: "Elevated Mac & Cheese Soufflé",
-          description: "Truffle mac and cheese soufflé with crispy pancetta and herb oil",
-          price: 32,
-          reason: "Weather-optimized comfort food with gourmet elevation",
-          confidence: 89,
-          tags: ["comfort", "weather-perfect", "elevated-classic", "warming"],
-          estimatedTime: 25,
-          mood: "comfort-seeking",
-          weatherOptimized: true,
-          aiGenerated: false
-        },
-        {
-          id: "ai-sustainable-4",
-          name: "Zero-Waste Vegetable Symphony",
-          description: "Nose-to-tail vegetable preparation using stems, leaves, and roots in creative ways",
-          price: 26,
-          reason: "Aligns with your sustainability values and dietary preferences",
-          confidence: 94,
-          tags: ["sustainable", "zero-waste", "vegetarian", "innovative"],
-          estimatedTime: 30,
-          mood: "conscious",
-          weatherOptimized: false,
-          aiGenerated: true
-        }
-      ];
-      setRecommendations(contextualRecommendations);
+    const generateAdvancedRecommendations = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      const recommendationPromises = Array.from({ length: 4 }, (_, i) => {
+        const moodVariations = ["adventurous", "comfort-seeking", "health-focused", "experimental"];
+        const currentMood = moodVariations[i % moodVariations.length];
+
+        const request: RecipeRequest = {
+          customer_request: `A unique, impressive ${currentMood} dish for a discerning customer. The weather is ${userContext.weather}. It's currently the ${userContext.timeOfDay}.`,
+          dietary_restrictions: userContext.dietaryRestrictions,
+          available_ingredients: userContext.previousOrders,
+          cooking_time: 60,
+          serving_size: 1,
+          cuisine_preference: 'Fusion',
+          spice_level: userContext.spicePreference > 7 ? 'hot' : 'medium',
+          meal_type: userContext.timeOfDay === 'evening' ? 'dinner' : 'lunch',
+          skill_level: 'advanced',
+          budget_range: userContext.priceRange as any,
+        };
+        return recipeApiService.generateRecipe(request);
+      });
+
+      try {
+        const responses = await Promise.all(recommendationPromises);
+        const transformedRecommendations = responses.map(response => {
+          const { recipe } = response;
+          let price = 35;
+          if (userContext.priceRange === 'premium') price = 55;
+          if (userContext.priceRange === 'economic') price = 25;
+
+          return {
+            id: recipe.id,
+            name: recipe.recipe_name,
+            description: recipe.description || 'A masterpiece from our Chef AI.',
+            price: price,
+            reason: recipe.description || `A perfect choice for your current mood and preferences.`,
+            confidence: Math.floor(Math.random() * (98 - 85 + 1)) + 85, // Simulate confidence
+            tags: recipe.tags,
+            estimatedTime: recipe.total_time,
+            mood: userContext.mood,
+            weatherOptimized: recipe.description?.toLowerCase().includes(userContext.weather),
+            aiGenerated: true,
+          };
+        });
+        setRecommendations(transformedRecommendations);
+      } catch (error) {
+        console.error("Failed to generate AI recommendations:", error);
+        setError("Sorry, we couldn't generate recommendations at this time. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     generateAdvancedRecommendations();
@@ -290,6 +289,9 @@ export const AIRecommendations = () => {
         </div>
 
         {/* AI Recommendations Grid */}
+        {isLoading && <div className="text-center text-warm-white text-xl">Generating personalized recommendations for you...</div>}
+        {error && <div className="text-center text-red-500 text-xl">{error}</div>}
+        {!isLoading && !error && (
         <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 mb-12">
           {recommendations.map((rec, index) => (
             <Card 
@@ -380,6 +382,7 @@ export const AIRecommendations = () => {
             </Card>
           ))}
         </div>
+        )}
 
         {/* Advanced AI Features Showcase */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">

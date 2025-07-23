@@ -1,23 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Clock, Leaf, Flame } from "lucide-react";
+import { Star, Leaf } from "lucide-react";
 import menuSteak from "@/assets/menu-steak.jpg";
 import menuPasta from "@/assets/menu-pasta.jpg";
+import { MenuItem } from "@/types/menu.types";
+import { panAsianMenu } from "@/constants/panAsianMenu";
 
-interface MenuItem {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image?: string;
-  category: string;
-  dietary: string[];
-  spiceLevel?: number;
-  featured?: boolean;
-}
-
-const menuItems: MenuItem[] = [
+const originalMenuItems: MenuItem[] = [
   {
     id: "1",
     name: "Wagyu Beef Tenderloin",
@@ -79,16 +69,27 @@ const menuItems: MenuItem[] = [
   }
 ];
 
+const menuItems: MenuItem[] = [...originalMenuItems, ...panAsianMenu];
+
 const categories = [
-  { id: "all", name: "All Dishes", icon: "🍽️" },
-  { id: "appetizers", name: "Appetizers", icon: "🥗" },
-  { id: "mains", name: "Main Courses", icon: "🥩" },
-  { id: "desserts", name: "Desserts", icon: "🍰" }
+  { id: "all", name: "All Dishes", icon: "" },
+  { id: "appetizers", name: "Appetizers", icon: "" },
+  { id: "mains", name: "Main Courses", icon: "" },
+  { id: "desserts", name: "Desserts", icon: "" },
+  { id: "japan", name: "Japan", icon: "" },
+  { id: "china", name: "China", icon: "" },
+  { id: "korea", name: "Korea", icon: "" },
+  { id: "thailand", name: "Thailand", icon: "" },
+  { id: "vietnam", name: "Vietnam", icon: "" },
+  { id: "india", name: "India", icon: "" },
+  { id: "malaysia-singapore", name: "Malaysia & Singapore", icon: "" },
+  { id: "desserts-asia", name: "Asian Desserts", icon: "" },
+  { id: "beverages-asia", name: "Asian Beverages", icon: "" },
 ];
 
 export const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [cart, setCart] = useState<{[key: string]: number}>({});
+  const [cart, setCart] = useState<Record<string, number>>({});
 
   const filteredItems = selectedCategory === "all" 
     ? menuItems 
@@ -99,7 +100,7 @@ export const Menu = () => {
   };
 
   const getTotalItems = () => {
-    return Object.values(cart).reduce((sum, count) => sum + count, 0);
+    return Object.values(cart).reduce((sum: number, count: number) => sum + count, 0);
   };
 
   return (

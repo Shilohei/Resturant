@@ -1,6 +1,6 @@
 import React from 'react';
 import { usePexelsImage } from '@/hooks/usePexelsImage';
-import { PexelsPhoto } from '@/services/pexelsApi';
+import type { PexelsPhoto } from '@/types/pexels.types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
@@ -52,9 +52,9 @@ const PexelsImage: React.FC<PexelsImageProps> = ({
 
   return (
     <img
-      src={photo.src.large} // Default src
-      srcSet={`${photo.src.small} 300w, ${photo.src.medium} 640w, ${photo.src.large} 1280w`}
-      sizes="(max-width: 640px) 300px, (max-width: 1280px) 640px, 1280px"
+      src={photo.src.original} // Default src
+      srcSet={`${photo.src.medium} 640w, ${photo.src.large} 1280w, ${photo.src.large2x} 1920w, ${photo.src.original} ${photo.width}w`}
+      sizes="(max-width: 640px) 640px, (max-width: 1280px) 1280px, (max-width: 1920px) 1920px, 100vw"
       alt={props.alt || photo.alt || `Image for ${query}`}
       loading="lazy"
       className={cn('w-full h-full object-cover', className)}
