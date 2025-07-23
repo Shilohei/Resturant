@@ -67,6 +67,12 @@ export const Header = () => {
             >
               Contact
             </button>
+            <a 
+              href="/menu-analysis"
+              className="text-warm-white hover:text-gold transition-colors duration-300"
+            >
+              Menu Analysis
+            </a>
           </nav>
 
           {/* Contact Info & CTA */}
@@ -128,6 +134,12 @@ export const Header = () => {
               >
                 Contact
               </button>
+              <a 
+                href="/menu-analysis"
+                className="text-warm-white hover:text-gold transition-colors duration-300 text-left py-2 block"
+              >
+                Menu Analysis
+              </a>
               <div className="flex flex-col space-y-2 pt-4 border-t border-gold/20">
                 <div className="flex items-center space-x-2 text-warm-gray">
                   <Phone size={16} />
