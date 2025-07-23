@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePexelsImage } from '@/hooks/usePexels';
+import { usePexelsImage } from '@/hooks/usePexelsImage';
 import { PexelsPhoto } from '@/services/pexelsApi';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';

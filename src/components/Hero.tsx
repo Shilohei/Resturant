@@ -1,18 +1,41 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Star, Award, Clock } from "lucide-react";
-import { usePexelsImages } from '@/hooks/usePexels';
-import ImageGallery from 'react-image-gallery';
-import 'react-image-gallery/styles/css/image-gallery.css';
+import { usePexelsSearch } from '@/hooks/usePexelsSearch';
+import { getRandomImageKeyword } from '@/constants/pexelsConfig';
+import PexelsImage from './PexelsImage';
+import ARMenuViewer from './ar/ARMenuViewer';
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Hero = () => {
+  const [isArViewerOpen, setIsArViewerOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const { data: pexelsData, isLoading, isError } = usePexelsImages({
-    query: 'restaurant interior modern',
-    orientation: 'landscape',
-    perPage: 5,
+  const [query] = useState(() => getRandomImageKeyword('hero'));
+
+  const { 
+    data,
+    isLoading,
+    isError,
+  } = usePexelsSearch<'photos'>({
+    mediaType: 'photos',
+    options: {
+      query,
+      orientation: 'landscape',
+      per_page: 5,
+    }
   });
+
+  const images = data?.pages.flatMap(page => page.photos) ?? [];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (images.length > 0) {
+      const timer = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+      }, 5000);
+      return () => clearInterval(timer);
+    }
+  }, [images.length]);
 
   useEffect(() => {
     setIsVisible(true);
@@ -28,7 +51,7 @@ export const Hero = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Gallery */}
-      <div className="absolute inset-0 z-0"> 
+      <div className="absolute inset-0 z-0">
         {isLoading && <Skeleton className="w-full h-full" />}
         {isError && (
           <div 
@@ -36,23 +59,23 @@ export const Hero = () => {
             style={{ backgroundImage: `url('/src/assets/fallbacks/hero-restaurant.jpg')` }}
           />
         )}
-        {pexelsData && (
-          <ImageGallery
-            items={pexelsData.photos.map(p => ({ original: p.src.large2x, thumbnail: p.src.tiny }))}
-            showNav={false}
-            showThumbnails={false}
-            showFullscreenButton={false}
-            showPlayButton={false}
-            autoPlay={true}
-            slideInterval={5000}
-            slideDuration={1500}
-            renderItem={(item) => (
+        {images.length > 0 && (
+          <div className="w-full h-full">
+            {images.map((image, index) => (
               <div
-                className="h-screen w-screen bg-cover bg-center"
-                style={{ backgroundImage: `url(${item.original})` }}
-              />
-            )}
-          />
+                key={image.id}
+                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}
+              >
+                <PexelsImage
+                  query={image.alt || query}
+                  alt={image.alt || 'Hero background image'}
+                  className="w-full h-full"
+
+                  loading="eager" // Eager load the hero image
+                />
+              </div>
+            ))}
+          </div>
         )}
       </div>
       
@@ -105,6 +128,14 @@ export const Hero = () => {
             >
               Explore Menu
             </Button>
+            <Button 
+              variant="outline"
+              size="xl"
+              onClick={() => setIsArViewerOpen(true)}
+              className="border-gold text-gold hover:bg-gold/10 hover:text-gold backdrop-blur-sm"
+            >
+              View in AR
+            </Button>
           </div>
 
           {/* Restaurant Stats */}
@@ -142,6 +173,7 @@ export const Hero = () => {
           <div className="w-1 h-3 bg-gold rounded-full mt-2 animate-pulse"></div>
         </div>
       </div>
+      {isArViewerOpen && <ARMenuViewer onClose={() => setIsArViewerOpen(false)} />}
     </section>
   );
 };
