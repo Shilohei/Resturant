@@ -1,25 +1,26 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchImages, FetchImagesParams, PexelsPhoto } from '@/services/pexelsApi';
+import { pexelsApiService } from '@/services/pexelsApi';
+import { PexelsPhoto, PexelsPhotoSearchOptions } from '@/types/pexels.types';
 
 // --- React Query Keys ---
 const pexelsKeys = {
   all: ['pexels'] as const,
   searches: () => [...pexelsKeys.all, 'searches'] as const,
-  search: (params: FetchImagesParams) => [...pexelsKeys.searches(), params] as const,
+  search: (params: PexelsPhotoSearchOptions) => [...pexelsKeys.searches(), params] as const,
 };
 
 // --- Hook for fetching multiple images ---
-interface UsePexelsImagesOptions extends FetchImagesParams {
+interface UsePexelsImagesOptions extends PexelsPhotoSearchOptions {
   // React Query options can be added here if needed
   enabled?: boolean;
 }
 
 export const usePexelsImages = (options: UsePexelsImagesOptions) => {
-  const { query, perPage = 10, orientation, enabled = true } = options;
+  const { query, per_page = 10, orientation, enabled = true, ...searchOptions } = options;
 
   return useQuery({
-    queryKey: pexelsKeys.search({ query, perPage, orientation }),
-    queryFn: () => fetchImages({ query, perPage, orientation }),
+    queryKey: pexelsKeys.search({ query, per_page, orientation, ...searchOptions }),
+    queryFn: () => pexelsApiService.searchPhotos({ query, per_page, orientation, ...searchOptions }),
     staleTime: 24 * 60 * 60 * 1000, // Cache for 24 hours
     gcTime: 24 * 60 * 60 * 1000, // Keep in cache for 24 hours (gcTime replaces cacheTime)
     enabled,
@@ -27,14 +28,14 @@ export const usePexelsImages = (options: UsePexelsImagesOptions) => {
 };
 
 // --- Hook for fetching a single image ---
-interface UsePexelsImageOptions extends Omit<FetchImagesParams, 'perPage'> {
+interface UsePexelsImageOptions extends Omit<PexelsPhotoSearchOptions, 'per_page'> {
   enabled?: boolean;
 }
 
 export const usePexelsImage = (options: UsePexelsImageOptions) => {
   const { data, isLoading, isError, error } = usePexelsImages({
     ...options,
-    perPage: 1,
+    per_page: 1,
   });
 
   // Extract the single photo from the response
