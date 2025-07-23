@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import MenuList from "@/components/menu/MenuList";
@@ -11,6 +12,9 @@ import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { PerformanceMonitor } from "@/components/PerformanceMonitor";
 
 const Index = () => {
+  const [searchParams] = useSearchParams();
+  const showPerfMonitor = searchParams.get('perf') === 'true';
+
   return (
     <div className="min-h-screen bg-charcoal">
       <Header />
@@ -23,7 +27,7 @@ const Index = () => {
       <PhotoGallery />
       <Contact />
       <PWAInstallPrompt />
-      <PerformanceMonitor />
+      {showPerfMonitor && <PerformanceMonitor />}
     </div>
   );
 };

@@ -1,96 +1,98 @@
-import axios from 'axios';
+import axios, { AxiosInstance, AxiosError } from 'axios';
+import {
+  PexelsPhoto, PexelsPhotoResponse, PexelsPhotoSearchOptions,
+  PexelsVideo, PexelsVideoResponse, PexelsVideoSearchOptions,
+  PexelsMediaOptions
+} from '../types/pexels.types';
 
-// 1. API Configuration
+// ==========================================================================
+// API Configuration
+// ==========================================================================
+
 const PEXELS_API_KEY = import.meta.env.VITE_PEXELS_API_KEY;
-const PEXELS_API_URL = 'https://api.pexels.com/v1/';
+const PEXELS_PHOTO_URL = import.meta.env.VITE_PEXELS_BASE_URL || 'https://api.pexels.com/v1';
+const PEXELS_VIDEO_URL = import.meta.env.VITE_PEXELS_VIDEO_URL || 'https://api.pexels.com/videos';
 
 if (!PEXELS_API_KEY) {
   console.error('Pexels API key is missing. Please add VITE_PEXELS_API_KEY to your .env file.');
 }
 
-const pexelsClient = axios.create({
-  baseURL: PEXELS_API_URL,
-  headers: {
-    Authorization: PEXELS_API_KEY,
-  },
-});
+// ==========================================================================
+// Axios Clients
+// ==========================================================================
 
-// 2. TypeScript Interfaces
-export interface PexelsPhoto {
-  id: number;
-  width: number;
-  height: number;
-  url: string;
-  photographer: string;
-  photographer_url: string;
-  photographer_id: number;
-  avg_color: string;
-  src: {
-    original: string;
-    large2x: string;
-    large: string;
-    medium: string;
-    small: string;
-    portrait: string;
-    landscape: string;
-    tiny: string;
-  };
-  liked: boolean;
-  alt: string;
-}
+const createPexelsClient = (baseURL: string): AxiosInstance => {
+  const client = axios.create({
+    baseURL,
+    headers: {
+      Authorization: PEXELS_API_KEY,
+    },
+  });
 
-export interface PexelsSearchResponse {
-  total_results: number;
-  page: number;
-  per_page: number;
-  photos: PexelsPhoto[];
-  next_page: string;
-}
+  client.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError) => {
+      const status = error.response?.status;
+      const message = (error.response?.data as any)?.error || error.message;
+      
+      console.error(`Pexels API error (${status || 'Unknown'}):`, message);
+      
+      if (status === 429) {
+        console.warn('Pexels API rate limit exceeded. Consider implementing exponential backoff.');
+      } else if (status === 401 || status === 403) {
+        console.error('Pexels API authentication failed. Please check your API key and permissions.');
+      }
 
-// 3. API Service Function
-export type ImageOrientation = 'landscape' | 'portrait' | 'square';
+      return Promise.reject(error);
+    }
+  );
 
+  return client;
+};
 
-export interface FetchImagesParams {
-  query: string;
-  perPage?: number;
-  orientation?: ImageOrientation;
-}
+const photoClient = createPexelsClient(PEXELS_PHOTO_URL);
+const videoClient = createPexelsClient(PEXELS_VIDEO_URL);
+
+// ==========================================================================
+// API Service Implementation
+// ==========================================================================
 
 /**
- * Fetches images from the Pexels API.
- * Includes basic error handling.
- * Caching and retry logic should be handled by a data-fetching library like React Query.
+ * A comprehensive service for interacting with the Pexels API.
+ * Caching, retry logic, and state management are handled by React Query in the hooks.
  */
-export const fetchImages = async ({ 
-  query, 
-  perPage = 1, 
-  orientation 
-}: FetchImagesParams): Promise<PexelsSearchResponse> => {
-  try {
-    const params: Record<string, string | number> = {
-      query,
-      per_page: perPage,
-    };
+export const pexelsApiService = {
+  // --- Photo Methods ---
 
-    if (orientation) {
-      params.orientation = orientation;
-    }
+  async searchPhotos(options: PexelsPhotoSearchOptions): Promise<PexelsPhotoResponse> {
+    const { data } = await photoClient.get<PexelsPhotoResponse>('/search', { params: options });
+    return data;
+  },
 
-    const response = await pexelsClient.get<PexelsSearchResponse>('/search', {
-      params,
-    });
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(`Pexels API error: ${error.response?.status}`, error.response?.data);
-      if (error.response?.status === 429) {
-        console.warn('Pexels API rate limit exceeded.');
-      }
-    } else {
-      console.error('An unexpected error occurred while fetching from Pexels:', error);
-    }
-    // Propagate the error to be handled by the caller (e.g., React Query)
-    throw error;
-  }
+  async getCuratedPhotos(options?: PexelsMediaOptions): Promise<PexelsPhotoResponse> {
+    const { data } = await photoClient.get<PexelsPhotoResponse>('/curated', { params: options });
+    return data;
+  },
+
+  async getPhotoById(id: number): Promise<PexelsPhoto> {
+    const { data } = await photoClient.get<PexelsPhoto>(`/photos/${id}`);
+    return data;
+  },
+
+  // --- Video Methods ---
+
+  async searchVideos(options: PexelsVideoSearchOptions): Promise<PexelsVideoResponse> {
+    const { data } = await videoClient.get<PexelsVideoResponse>('/search', { params: options });
+    return data;
+  },
+
+  async getPopularVideos(options?: PexelsMediaOptions): Promise<PexelsVideoResponse> {
+    const { data } = await videoClient.get<PexelsVideoResponse>('/popular', { params: options });
+    return data;
+  },
+
+  async getVideoById(id: number): Promise<PexelsVideo> {
+    const { data } = await videoClient.get<PexelsVideo>(`/videos/${id}`);
+    return data;
+  },
 };
