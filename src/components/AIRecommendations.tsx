@@ -139,7 +139,7 @@ export const AIRecommendations = () => {
   const processVoiceQuery = (query: string) => {
     // Simulate AI processing of voice query
     const lowerQuery = query.toLowerCase();
-    let newContext = { ...userContext };
+    const newContext = { ...userContext };
 
     if (lowerQuery.includes('spicy')) newContext.spicePreference = 9;
     if (lowerQuery.includes('mild')) newContext.spicePreference = 3;

@@ -4,7 +4,7 @@ import { Star, Award, Clock } from "lucide-react";
 import { usePexelsSearch } from '@/hooks/usePexelsSearch';
 import { getRandomImageKeyword } from '@/constants/pexelsConfig';
 import PexelsImage from './PexelsImage';
-import ARMenuViewer from './ar/ARMenuViewer';
+import { ARMenuPreview } from './ARMenuPreview';
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Hero = () => {
@@ -173,7 +173,7 @@ export const Hero = () => {
           <div className="w-1 h-3 bg-gold rounded-full mt-2 animate-pulse"></div>
         </div>
       </div>
-      {isArViewerOpen && <ARMenuViewer onClose={() => setIsArViewerOpen(false)} />}
+      {isArViewerOpen && <ARMenuPreview />}
     </section>
   );
 };
