@@ -45,24 +45,26 @@ const MenuFilter: React.FC<MenuFilterProps> = ({ selectedFilters, setSelectedFil
           </Select.ScrollUpButton>
 
           <Select.Viewport className="p-2">
-            <Select.Label className="px-4 py-2 text-xs text-neutral-500 font-inter">Dietary Options</Select.Label>
-            {filterOptions.map(option => (
-              <Select.Item
-                key={option.value}
-                value={option.value}
-                className="text-sm leading-none text-neutral-800 dark:text-neutral-200 rounded-lg flex items-center h-[35px] px-4 relative select-none data-[disabled]:text-neutral-400 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-amber-500/20 dark:data-[highlighted]:bg-amber-500/30 data-[highlighted]:text-amber-900 dark:data-[highlighted]:text-amber-100 cursor-pointer"
-              >
-                <Select.ItemText>
-                  <div className="flex items-center gap-3">
-                    {option.icon}
-                    <span>{option.label}</span>
-                  </div>
-                </Select.ItemText>
-                <Select.ItemIndicator className="absolute right-4 inline-flex items-center">
-                  <Check className="h-4 w-4" />
-                </Select.ItemIndicator>
-              </Select.Item>
-            ))}
+            <Select.Group>
+              <Select.Label className="px-4 py-2 text-xs text-neutral-500 font-inter">Dietary Options</Select.Label>
+              {filterOptions.map(option => (
+                <Select.Item
+                  key={option.value}
+                  value={option.value}
+                  className="text-sm leading-none text-neutral-800 dark:text-neutral-200 rounded-lg flex items-center h-[35px] px-4 relative select-none data-[disabled]:text-neutral-400 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-amber-500/20 dark:data-[highlighted]:bg-amber-500/30 data-[highlighted]:text-amber-900 dark:data-[highlighted]:text-amber-100 cursor-pointer"
+                >
+                  <Select.ItemText>
+                    <div className="flex items-center gap-3">
+                      {option.icon}
+                      <span>{option.label}</span>
+                    </div>
+                  </Select.ItemText>
+                  <Select.ItemIndicator className="absolute right-4 inline-flex items-center">
+                    <Check className="h-4 w-4" />
+                  </Select.ItemIndicator>
+                </Select.Item>
+              ))}
+            </Select.Group>
           </Select.Viewport>
 
           <Select.ScrollDownButton className="flex items-center justify-center h-[25px] bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 cursor-default">
