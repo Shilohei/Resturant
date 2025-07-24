@@ -59,7 +59,7 @@ const MenuList: React.FC = () => {
 
   const filteredMenuItems = sampleMenuItems.filter(item => {
     const searchMatch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const filterMatch = selectedFilters.length === 0 || selectedFilters.every(filter => item.dietaryTags.includes(filter as any));
+    const filterMatch = selectedFilters.length === 0 || selectedFilters.every(filter => item.dietaryTags.includes(filter as 'vegan' | 'gluten-free' | 'keto'));
     return searchMatch && filterMatch;
   });
 
