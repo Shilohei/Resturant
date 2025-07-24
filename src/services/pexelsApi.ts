@@ -33,7 +33,7 @@ const createPexelsClient = (baseURL: string): AxiosInstance => {
     (response) => response,
     (error: AxiosError) => {
       const status = error.response?.status;
-      const message = (error.response?.data as any)?.error || error.message;
+      const message = (error.response?.data as { error?: string })?.error || error.message;
       
       console.error(`Pexels API error (${status || 'Unknown'}):`, message);
       

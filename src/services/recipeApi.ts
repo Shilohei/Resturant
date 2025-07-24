@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { RecipeRequest, Recipe, RecipeResponse, RecipeGenerationError } from '../types/recipe.types';
+import { AxiosResponse } from 'axios';
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
@@ -272,6 +273,27 @@ TASTE GENOME ANALYSIS:
 
 Respond ONLY with the JSON object matching the Sophisticated Output Schema, no additional text or formatting.`;
 
+interface ParsedRecipe {
+  recipe_name: string;
+  cuisine_style: string;
+  description: string;
+  prep_time: number;
+  cook_time: number;
+  difficulty: number;
+  serves: number;
+  ingredients: Array<{ item: string; amount: string; category: string }>;
+  instructions: Array<{ step: number; instruction: string }>;
+  tags: string[];
+  nutritional_info: object;
+  flavor_profile: string[];
+  pairing_suggestions: string[];
+  storage_instructions: string;
+  scaling_tips: string;
+  allergen_warnings: string[];
+  customization_options: { variations: string[]; substitutions: object; difficulty_adjustments: string[] };
+  cooking_tips: string[];
+}
+
 class RecipeApiService {
   private apiKeys: string[] = [
     'sk-or-v1-d6995a869fe2bdbdbe32d8561ffdca956c8c57f2dbbe4a0b3d724465b81a257',
@@ -441,7 +463,8 @@ class RecipeApiService {
   /**
    * Parse AI response and validate structure
    */
-  private parseAIResponse(response: string, request: RecipeRequest): any {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private parseAIResponse(response: string, request: RecipeRequest): ParsedRecipe {
     try {
       // Clean the response - remove any markdown formatting
       const cleanResponse = response
@@ -571,7 +594,7 @@ class RecipeApiService {
     return this.cache.size;
   }
 
-  private async makeApiCall(payload: any): Promise<any> {
+  private async makeApiCall(payload: object): Promise<AxiosResponse> {
     let attempts = 0;
     while (attempts < this.apiKeys.length) {
       try {
