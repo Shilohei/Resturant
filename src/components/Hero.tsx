@@ -38,7 +38,8 @@ export const Hero = () => {
   }, [images.length]);
 
   useEffect(() => {
-    setIsVisible(true);
+    const timeout = setTimeout(() => setIsVisible(true), 200);
+    return () => clearTimeout(timeout);
   }, []);
 
   const scrollToSection = (sectionId: string) => {
@@ -48,8 +49,10 @@ export const Hero = () => {
     }
   };
 
+  const featureImageQuery = getRandomImageKeyword('food');
+
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background Gallery */}
       <div className="absolute inset-0 z-0">
         {isLoading && <Skeleton className="w-full h-full" />}
@@ -67,11 +70,10 @@ export const Hero = () => {
                 className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}
               >
                 <PexelsImage
-                  query={image.alt || query}
+                  photo={image}
                   alt={image.alt || 'Hero background image'}
-                  className="w-full h-full"
-
-                  loading="eager" // Eager load the hero image
+                  className="w-full h-full object-cover animate-ken-burns"
+                  loading="eager"
                 />
               </div>
             ))}
@@ -80,94 +82,58 @@ export const Hero = () => {
       </div>
       
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-charcoal/95 via-charcoal/85 to-charcoal/60" />
+      <div className="absolute inset-0 bg-gradient-to-r from-charcoal/90 via-charcoal/70 to-transparent" />
       
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 text-center lg:text-left">
-        <div className="max-w-4xl mx-auto lg:mx-0">
-          {/* Awards & Recognition */}
-          <div className={`flex justify-center lg:justify-start items-center space-x-6 mb-8 ${isVisible ? 'animate-fade-in' : 'opacity-0'}`}>
-            <div className="flex items-center space-x-1">
-              <Star className="text-gold fill-gold" size={20} />
-              <Star className="text-gold fill-gold" size={20} />
-              <Star className="text-gold fill-gold" size={20} />
-              <span className="text-warm-gray ml-2">Michelin Guide</span>
+      <div className="relative z-10 container mx-auto px-4">
+        <div className="grid lg:grid-cols-2 gap-8 items-center">
+          {/* Left Column: Text Content */}
+          <div className="text-center lg:text-left">
+            <div className={`mb-6 ${isVisible ? 'animate-fade-in' : 'opacity-0'}`}>
+              <div className="inline-flex items-center bg-gold/10 text-gold border border-gold/30 rounded-full px-4 py-1 text-sm">
+                <Award className="mr-2" size={16} />
+                <span>2024's Restaurant of the Year</span>
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Award className="text-gold" size={20} />
-              <span className="text-warm-gray">2024 Restaurant of the Year</span>
+
+            <h1 className={`font-cormorant text-5xl md:text-7xl font-bold text-warm-white mb-6 leading-tight ${isVisible ? 'animate-slide-up' : 'opacity-0 translate-y-10'}`}>
+              A Symphony of
+              <span className="block text-luxury glow">Exquisite Flavors</span>
+            </h1>
+            
+            <p className={`text-lg md:text-xl text-warm-gray mb-10 max-w-xl mx-auto lg:mx-0 ${isVisible ? 'animate-fade-in' : 'opacity-0'} transition-opacity duration-1000 delay-300`}>
+              Experience a culinary journey where tradition meets innovation, crafted with passion and the finest ingredients.
+            </p>
+
+            <div className={`flex flex-col sm:flex-row gap-4 justify-center lg:justify-start ${isVisible ? 'animate-fade-in' : 'opacity-0'} transition-opacity duration-1000 delay-500`}>
+              <Button variant="luxury" size="xl" onClick={() => scrollToSection('reservations')}>
+                Reserve Your Table
+              </Button>
+              <Button variant="hero" size="xl" onClick={() => scrollToSection('menu')}>
+                Explore Menu
+              </Button>
             </div>
           </div>
 
-          {/* Main Heading */}
-          <h1 className={`font-cormorant text-5xl md:text-7xl lg:text-8xl font-bold text-warm-white mb-6 leading-tight ${isVisible ? 'animate-slide-up' : 'opacity-0 translate-y-10'}`}>
-            Culinary
-            <span className="block text-luxury glow">Theatre</span>
-          </h1>
-          
-          {/* Subtitle */}
-          <p className={`text-xl md:text-2xl text-warm-gray mb-8 max-w-2xl ${isVisible ? 'animate-fade-in' : 'opacity-0'} transition-all duration-1000 delay-500`}>
-            Where every dish tells a story and every meal becomes an unforgettable performance of flavors, artistry, and passion.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className={`flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12 ${isVisible ? 'animate-slide-up' : 'opacity-0 translate-y-10'} transition-all duration-1000 delay-700`}>
-            <Button 
-              variant="luxury"
-              size="xl"
-              onClick={() => scrollToSection('reservations')}
-              className="transform hover:scale-105 transition-transform duration-300"
-            >
-              Reserve Your Table
-            </Button>
-            <Button 
-              variant="hero"
-              size="xl"
-              onClick={() => scrollToSection('menu')}
-              className="backdrop-blur-sm"
-            >
-              Explore Menu
-            </Button>
-            <Button 
-              variant="outline"
-              size="xl"
-              onClick={() => setIsArViewerOpen(true)}
-              className="border-gold text-gold hover:bg-gold/10 hover:text-gold backdrop-blur-sm"
-            >
-              View in AR
-            </Button>
-          </div>
-
-          {/* Restaurant Stats */}
-          <div className={`grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl mx-auto lg:mx-0 ${isVisible ? 'animate-fade-in' : 'opacity-0'} transition-all duration-1000 delay-1000`}>
-            <div className="text-center lg:text-left">
-              <div className="text-3xl font-cormorant font-bold text-gold mb-1">15+</div>
-              <div className="text-warm-gray text-sm">Years of Excellence</div>
-            </div>
-            <div className="text-center lg:text-left">
-              <div className="text-3xl font-cormorant font-bold text-gold mb-1">50K+</div>
-              <div className="text-warm-gray text-sm">Happy Guests</div>
-            </div>
-            <div className="text-center lg:text-left">
-              <div className="text-3xl font-cormorant font-bold text-gold mb-1">4.9★</div>
-              <div className="text-warm-gray text-sm">Customer Rating</div>
+          {/* Right Column: Image */}
+          <div className={`hidden lg:block relative ${isVisible ? 'animate-fade-in-right' : 'opacity-0'}`}>
+            <div className="relative w-full h-[500px] rounded-lg overflow-hidden shadow-2xl shadow-black/50 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+              <PexelsImage 
+                query={featureImageQuery} 
+                alt="A featured dish from Otsu restaurant"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"/>
+              <div className="absolute bottom-4 left-4 text-white">
+                <h3 className="font-cormorant text-2xl font-bold">Chef's Special</h3>
+                <p className="text-sm opacity-80">Try our seasonal masterpiece</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Hours Badge */}
-      <div className="absolute bottom-8 right-8 bg-charcoal-light/80 backdrop-blur-sm border border-gold/30 rounded-lg p-4 animate-float">
-        <div className="flex items-center space-x-2 text-gold">
-          <Clock size={20} />
-          <div>
-            <div className="font-semibold">Open Now</div>
-            <div className="text-sm text-warm-gray">5:00 PM - 11:00 PM</div>
-          </div>
-        </div>
-      </div>
-
-      {isArViewerOpen && <ARMenuPreview />}
+      {isArViewerOpen && <ARMenuPreview />} 
     </section>
   );
 };

@@ -519,8 +519,8 @@ export const OnlineOrdering = () => {
                     {/* Payment Method */}
                     <div>
                       <Label className="text-warm-gray">Payment Method</Label>
-                      <Select value={orderDetails.paymentMethod} onValueChange={(value: any) => 
-                        setOrderDetails({...orderDetails, paymentMethod: value})
+                      <Select value={orderDetails.paymentMethod} onValueChange={(value) => 
+                        setOrderDetails({...orderDetails, paymentMethod: value as 'card' | 'cash' | 'digital'})
                       }>
                         <SelectTrigger className="bg-charcoal-light border-warm-gray/20">
                           <SelectValue />

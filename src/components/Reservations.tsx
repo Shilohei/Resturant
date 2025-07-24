@@ -311,7 +311,7 @@ export const Reservations = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Mail size={16} className="text-gold" />
-                      <span>reservations@bistroluxe.com</span>
+                      <span>reservations@otsu.com</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Clock size={16} className="text-gold" />

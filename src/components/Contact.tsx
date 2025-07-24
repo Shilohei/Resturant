@@ -205,7 +205,7 @@ export const Contact = () => {
                     <div className="flex items-center space-x-3">
                       <Mail size={20} className="text-gold" />
                       <div>
-                        <p className="text-warm-white font-medium">info@bistroluxe.com</p>
+                        <p className="text-warm-white font-medium">info@otsu.com</p>
                         <p className="text-warm-gray text-sm">General Information</p>
                       </div>
                     </div>
@@ -213,7 +213,7 @@ export const Contact = () => {
                     <div className="flex items-center space-x-3">
                       <Mail size={20} className="text-gold" />
                       <div>
-                        <p className="text-warm-white font-medium">events@bistroluxe.com</p>
+                        <p className="text-warm-white font-medium">events@otsu.com</p>
                         <p className="text-warm-gray text-sm">Private Events & Catering</p>
                       </div>
                     </div>
@@ -270,7 +270,7 @@ export const Contact = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-gold to-gold-dark rounded-full flex items-center justify-center">
                 <span className="text-charcoal font-bold">B</span>
               </div>
-              <h3 className="text-2xl font-cormorant font-bold text-gold">Bistro Luxe</h3>
+              <h3 className="text-2xl font-cormorant font-bold text-gold">Otsu</h3>
             </div>
             
             <p className="text-warm-gray mb-6 max-w-md mx-auto">
@@ -279,7 +279,7 @@ export const Contact = () => {
             </p>
 
             <div className="flex justify-center space-x-6 text-warm-gray text-sm">
-              <span>© 2024 Bistro Luxe</span>
+              <span>© 2024 Otsu</span>
               <span>•</span>
               <button className="hover:text-gold transition-colors">Privacy Policy</button>
               <span>•</span>

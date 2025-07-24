@@ -52,12 +52,17 @@ const PexelsImage: React.FC<PexelsImageProps> = ({
 
   return (
     <img
-      src={photo.src.original} // Default src
-      srcSet={`${photo.src.medium} 640w, ${photo.src.large} 1280w, ${photo.src.large2x} 1920w, ${photo.src.original} ${photo.width}w`}
-      sizes="(max-width: 640px) 640px, (max-width: 1280px) 1280px, (max-width: 1920px) 1920px, 100vw"
-      alt={props.alt || photo.alt || `Image for ${query}`}
-      loading="lazy"
-      className={cn('w-full h-full object-cover', className)}
+      src={photo.src.large2x} // Better default for high-res screens
+      srcSet={`
+        ${photo.src.medium} 640w,
+        ${photo.src.large} 1024w,
+        ${photo.src.large2x} 1920w,
+        ${photo.src.original} ${photo.width}w
+      `}
+      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1920px"
+      alt={props.alt || photo.alt || `Image from Pexels`}
+      loading={props.loading || 'lazy'}
+      className={cn('w-full h-full object-cover bg-charcoal-light', className)}
       {...props}
     />
   );

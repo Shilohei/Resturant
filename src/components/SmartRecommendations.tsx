@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,8 @@ import { Sparkles, TrendingUp, Clock, MapPin, Thermometer, Star, Brain, Zap } fr
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import PexelsImage from "@/components/PexelsImage";
+
+type Mood = 'adventurous' | 'comfort' | 'healthy' | 'indulgent';
 
 interface RecommendationContext {
   timeOfDay: 'breakfast' | 'lunch' | 'dinner' | 'late-night';
@@ -15,7 +17,7 @@ interface RecommendationContext {
   userPreferences: string[];
   orderHistory: string[];
   currentLocation?: { lat: number; lng: number };
-  mood?: 'adventurous' | 'comfort' | 'healthy' | 'indulgent';
+  mood?: Mood;
 }
 
 interface SmartRecommendation {
@@ -41,23 +43,30 @@ interface SmartRecommendation {
   personalScore: number;
 }
 
+interface MenuItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  tags: string[];
+  preparationTime: number;
+  popularity: number;
+  nutritionalInfo?: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
+}
+
 export const SmartRecommendations = () => {
   const [context, setContext] = useState<RecommendationContext | null>(null);
   const [recommendations, setRecommendations] = useState<SmartRecommendation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedMood, setSelectedMood] = useState<string>('');
+  const [selectedMood, setSelectedMood] = useState<Mood | ''>('');
 
-  useEffect(() => {
-    initializeContext();
-  }, []);
-
-  useEffect(() => {
-    if (context) {
-      generateRecommendations();
-    }
-  }, [context, selectedMood]);
-
-  const initializeContext = async () => {
+  const initializeContext = useCallback(async () => {
     try {
       // Get current time context
       const now = new Date();
@@ -91,21 +100,21 @@ export const SmartRecommendations = () => {
         dayOfWeek: dayOfWeek === 0 || dayOfWeek === 6 ? 'weekend' : 'weekday',
         userPreferences,
         orderHistory,
-        mood: selectedMood as any || undefined
+        mood: selectedMood || undefined
       });
     } catch (error) {
       console.error('Error initializing context:', error);
       setIsLoading(false);
     }
-  };
+  }, [selectedMood]);
 
-  const getWeatherData = async (): Promise<RecommendationContext['weather']> => {
+  const getWeatherData = useCallback(async (): Promise<RecommendationContext['weather']> => {
     // Simulate weather API call
     const weatherOptions: RecommendationContext['weather'][] = ['sunny', 'rainy', 'cold', 'hot'];
     return weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
-  };
+  }, []);
 
-  const generateRecommendations = async () => {
+  const generateRecommendations = useCallback(async () => {
     if (!context) return;
 
     setIsLoading(true);
@@ -113,7 +122,7 @@ export const SmartRecommendations = () => {
     // Simulate AI processing delay
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    const menuItems = [
+    const menuItems: MenuItem[] = [
       {
         id: "1",
         name: "Wagyu Beef Tenderloin",
@@ -171,7 +180,7 @@ export const SmartRecommendations = () => {
       }
     ];
 
-    const scoredRecommendations = menuItems.map(item => {
+    const scoredRecommendations = menuItems.map((item: MenuItem) => {
       const weatherScore = calculateWeatherScore(item, context.weather);
       const timeScore = calculateTimeScore(item, context.timeOfDay);
       const personalScore = calculatePersonalScore(item, context);
@@ -196,9 +205,9 @@ export const SmartRecommendations = () => {
 
     setRecommendations(topRecommendations);
     setIsLoading(false);
-  };
+  }, [context]);
 
-  const calculateWeatherScore = (item: any, weather: string): number => {
+  const calculateWeatherScore = useCallback((item: MenuItem, weather: string): number => {
     const weatherPreferences = {
       cold: ['comfort', 'warm', 'soup'],
       hot: ['light', 'fresh', 'cold'],
@@ -209,9 +218,9 @@ export const SmartRecommendations = () => {
     const preferences = weatherPreferences[weather as keyof typeof weatherPreferences] || [];
     const matches = item.tags.filter((tag: string) => preferences.includes(tag)).length;
     return Math.min(matches / preferences.length, 1);
-  };
+  }, []);
 
-  const calculateTimeScore = (item: any, timeOfDay: string): number => {
+  const calculateTimeScore = useCallback((item: MenuItem, timeOfDay: string): number => {
     const timePreferences = {
       breakfast: ['light', 'fresh', 'healthy'],
       lunch: ['balanced', 'protein', 'vegetables'],
@@ -222,9 +231,9 @@ export const SmartRecommendations = () => {
     const preferences = timePreferences[timeOfDay as keyof typeof timePreferences] || [];
     const matches = item.tags.filter((tag: string) => preferences.includes(tag)).length;
     return Math.min(matches / preferences.length + item.popularity * 0.3, 1);
-  };
+  }, []);
 
-  const calculatePersonalScore = (item: any, context: RecommendationContext): number => {
+  const calculatePersonalScore = useCallback((item: MenuItem, context: RecommendationContext): number => {
     let score = 0;
     
     // Check user preferences
@@ -253,10 +262,11 @@ export const SmartRecommendations = () => {
     }
 
     return Math.min(score, 1);
-  };
+  }, []);
 
-  const generateReasoning = (
-    item: any, 
+  const generateReasoning = useCallback(
+    (
+    item: MenuItem, 
     context: RecommendationContext, 
     weatherScore: number, 
     timeScore: number, 
@@ -303,14 +313,14 @@ export const SmartRecommendations = () => {
     }
 
     return reasons.filter(Boolean);
-  };
+  }, []);
 
-  const handleMoodSelection = (mood: string) => {
+  const handleMoodSelection = useCallback((mood: Mood) => {
     setSelectedMood(mood);
-    setContext(prev => prev ? { ...prev, mood: mood as any } : null);
-  };
+    setContext(prev => prev ? { ...prev, mood } : null);
+  }, []);
 
-  const handleAddToCart = (item: SmartRecommendation) => {
+  const handleAddToCart = useCallback((item: SmartRecommendation) => {
     // Add to order history
     const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
     orderHistory.push(item.id);
@@ -319,7 +329,7 @@ export const SmartRecommendations = () => {
     toast.success(`${item.name} added to cart!`, {
       description: `AI confidence: ${Math.round(item.confidence * 100)}%`
     });
-  };
+  }, []);
 
   const moodOptions = [
     { value: 'adventurous', label: 'Adventurous', icon: <Zap className="h-4 w-4" /> },
@@ -374,7 +384,7 @@ export const SmartRecommendations = () => {
                 key={mood.value}
                 variant={selectedMood === mood.value ? "default" : "outline"}
                 size="sm"
-                onClick={() => handleMoodSelection(mood.value)}
+                onClick={() => handleMoodSelection(mood.value as Mood)}
                 className={`${
                   selectedMood === mood.value 
                     ? "bg-gold text-charcoal" 

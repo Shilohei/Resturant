@@ -33,6 +33,39 @@ interface UserContext {
   batteryLevel?: number;
 }
 
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
+interface SpeechRecognitionResult {
+  isFinal: boolean;
+  length: number;
+  item(index: number): SpeechRecognitionAlternative;
+  [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionResultList {
+  length: number;
+  item(index: number): SpeechRecognitionResult;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognition {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  onerror: (event: Event) => void;
+  onend: () => void;
+  start: () => void;
+  stop: () => void;
+}
+
 export const AIRecommendations = () => {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [userContext, setUserContext] = useState<UserContext>({
@@ -72,7 +105,7 @@ export const AIRecommendations = () => {
           spice_level: userContext.spicePreference > 7 ? 'hot' : 'medium',
           meal_type: userContext.timeOfDay === 'evening' ? 'dinner' : 'lunch',
           skill_level: 'advanced',
-          budget_range: userContext.priceRange as any,
+          budget_range: userContext.priceRange,
         };
         return recipeApiService.generateRecipe(request);
       });
@@ -114,7 +147,7 @@ export const AIRecommendations = () => {
   // Voice search functionality
   const startVoiceSearch = () => {
     if ('webkitSpeechRecognition' in window) {
-      const recognition = new (window as any).webkitSpeechRecognition();
+      const recognition = new ((window as { webkitSpeechRecognition: new () => SpeechRecognition }).webkitSpeechRecognition)();
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = 'en-US';
@@ -122,7 +155,7 @@ export const AIRecommendations = () => {
       setIsListening(true);
       recognition.start();
 
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
         const transcript = event.results[0][0].transcript;
         setVoiceQuery(transcript);
         processVoiceQuery(transcript);

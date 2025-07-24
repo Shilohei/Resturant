@@ -59,7 +59,7 @@ export const SavedRecipesList: React.FC = () => {
     setFilters(prev => ({ ...prev, search_query: query }));
   };
 
-  const handleFilterChange = (key: keyof RecipeFilters, value: any) => {
+  const handleFilterChange = (key: keyof RecipeFilters, value: unknown) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 

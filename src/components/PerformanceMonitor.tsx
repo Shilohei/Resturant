@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -26,6 +26,23 @@ interface WebVital {
   description: string;
 }
 
+interface BatteryManager {
+  level: number;
+}
+
+interface PerformanceEventTiming extends PerformanceEntry {
+  processingStart: number;
+}
+
+interface LayoutShift extends PerformanceEntry {
+  value: number;
+  hadRecentInput: boolean;
+}
+
+interface LargestContentfulPaint extends PerformanceEntry {
+  startTime: number;
+}
+
 export const PerformanceMonitor = () => {
   const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -35,26 +52,7 @@ export const PerformanceMonitor = () => {
     { name: 'CLS', value: 0, rating: 'good', threshold: { good: 0.1, poor: 0.25 }, icon: <Clock className="h-4 w-4" />, description: "Cumulative Layout Shift" },
   ]);
 
-  useEffect(() => {
-    // Only show performance monitor in development or for admin users
-    const isDev = import.meta.env.DEV;
-    const isAdmin = localStorage.getItem('admin-mode') === 'true';
-    
-    if (!isDev && !isAdmin) return;
-
-    setIsVisible(true);
-    collectPerformanceMetrics();
-    
-    // Set up performance observer for Core Web Vitals
-    if ('PerformanceObserver' in window) {
-      setupWebVitalsObserver();
-    }
-
-    // Monitor network and battery status
-    monitorDeviceStatus();
-  }, []);
-
-  const collectPerformanceMetrics = () => {
+  const collectPerformanceMetrics = useCallback(() => {
     if (!('performance' in window)) return;
 
     const navigationEntries = performance.getEntriesByType('navigation');
@@ -82,20 +80,20 @@ export const PerformanceMonitor = () => {
       deviceMemory,
       isOnline: navigator.onLine
     });
-  };
+  }, []);
 
-  const setupWebVitalsObserver = () => {
+  const setupWebVitalsObserver = useCallback(() => {
     // Largest Contentful Paint
     new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      const lastEntry = entries[entries.length - 1];
+      const lastEntry = entries[entries.length - 1] as LargestContentfulPaint;
       updateWebVital('LCP', lastEntry.startTime);
     }).observe({ entryTypes: ['largest-contentful-paint'] });
 
     // First Input Delay
     new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      entries.forEach((entry: any) => {
+      entries.forEach((entry: PerformanceEventTiming) => {
         updateWebVital('FID', entry.processingStart - entry.startTime);
       });
     }).observe({ entryTypes: ['first-input'] });
@@ -104,14 +102,14 @@ export const PerformanceMonitor = () => {
     new PerformanceObserver((list) => {
       let clsValue = 0;
       const entries = list.getEntries();
-      entries.forEach((entry: any) => {
+      entries.forEach((entry: LayoutShift) => {
         if (!entry.hadRecentInput) {
           clsValue += entry.value;
         }
       });
       updateWebVital('CLS', clsValue);
     }).observe({ entryTypes: ['layout-shift'] });
-  };
+  }, []);
 
   const updateWebVital = (name: string, value: number) => {
     const vitalConfig = {
@@ -151,10 +149,10 @@ export const PerformanceMonitor = () => {
     });
   };
 
-  const monitorDeviceStatus = () => {
+  const monitorDeviceStatus = useCallback(() => {
     // Battery API
     if ('getBattery' in navigator) {
-      (navigator as any).getBattery().then((battery: any) => {
+      (navigator as { getBattery: () => Promise<BatteryManager> }).getBattery().then((battery) => {
         setMetrics(prev => prev ? { ...prev, batteryLevel: battery.level * 100 } : null);
       });
     }
@@ -171,7 +169,25 @@ export const PerformanceMonitor = () => {
       window.removeEventListener('online', updateOnlineStatus);
       window.removeEventListener('offline', updateOnlineStatus);
     };
-  };
+  }, []);
+
+  useEffect(() => {
+    const isDev = import.meta.env.DEV;
+    const isAdmin = localStorage.getItem('admin-mode') === 'true';
+    
+    if (!isDev && !isAdmin) return;
+
+    setIsVisible(true);
+    collectPerformanceMetrics();
+    
+    // Set up performance observer for Core Web Vitals
+    if ('PerformanceObserver' in window) {
+      setupWebVitalsObserver();
+    }
+
+    // Monitor network and battery status
+    return monitorDeviceStatus();
+  }, [collectPerformanceMetrics, setupWebVitalsObserver, monitorDeviceStatus]);
 
   const getRatingColor = (rating: string) => {
     switch (rating) {

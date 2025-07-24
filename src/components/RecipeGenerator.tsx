@@ -25,7 +25,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useGenerateRecipe, useSavedRecipes } from '../hooks/useRecipes';
-import { RecipeRequest } from '../types/recipe.types';
+import { RecipeRequest, RecipeResponse } from '../types/recipe.types';
 import { RecipeCard } from './RecipeCard';
 import { SavedRecipesList } from './SavedRecipesList';
 
@@ -58,7 +58,7 @@ export const RecipeGenerator: React.FC = () => {
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([]);
   const [availableIngredients, setAvailableIngredients] = useState<string[]>([]);
   const [newIngredient, setNewIngredient] = useState('');
-  const [generatedRecipe, setGeneratedRecipe] = useState<any>(null);
+  const [generatedRecipe, setGeneratedRecipe] = useState<RecipeResponse | null>(null);
 
   const { mutate: generateRecipe, isPending, error } = useGenerateRecipe();
   const { savedRecipes, saveRecipe } = useSavedRecipes();
@@ -251,7 +251,7 @@ export const RecipeGenerator: React.FC = () => {
                     </div>
                     <div>
                       <Label>Meal Type</Label>
-                      <Select onValueChange={(value) => setValue('meal_type', value as any)}>
+                      <Select onValueChange={(value) => setValue('meal_type', value as 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert' | 'appetizer')}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select meal type" />
                         </SelectTrigger>
@@ -267,7 +267,7 @@ export const RecipeGenerator: React.FC = () => {
                     </div>
                     <div>
                       <Label>Spice Level</Label>
-                      <Select onValueChange={(value) => setValue('spice_level', value as any)}>
+                      <Select onValueChange={(value) => setValue('spice_level', value as 'mild' | 'medium' | 'hot' | 'very_hot')}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select spice level" />
                         </SelectTrigger>
@@ -281,7 +281,7 @@ export const RecipeGenerator: React.FC = () => {
                     </div>
                     <div>
                       <Label>Skill Level</Label>
-                      <Select onValueChange={(value) => setValue('skill_level', value as any)}>
+                      <Select onValueChange={(value) => setValue('skill_level', value as 'beginner' | 'intermediate' | 'advanced')}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select skill level" />
                         </SelectTrigger>
@@ -289,6 +289,19 @@ export const RecipeGenerator: React.FC = () => {
                           <SelectItem value="beginner">Beginner</SelectItem>
                           <SelectItem value="intermediate">Intermediate</SelectItem>
                           <SelectItem value="advanced">Advanced</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Budget Range</Label>
+                      <Select onValueChange={(value) => setValue('budget_range', value as 'economic' | 'moderate' | 'premium')}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select budget range" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="economic">Economic</SelectItem>
+                          <SelectItem value="moderate">Moderate</SelectItem>
+                          <SelectItem value="premium">Premium</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
