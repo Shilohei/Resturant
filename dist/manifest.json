@@ -1,6 +1,6 @@
 {
-  "name": "Bistro Luxe - Fine Dining Experience",
-  "short_name": "Bistro Luxe",
+  "name": "Shinmen - Fine Dining Experience",
+  "short_name": "Shinmen",
   "description": "Experience culinary excellence with our fine dining restaurant. Order online, make reservations, and explore our exquisite menu.",
   "start_url": "/",
   "display": "standalone",
@@ -73,14 +73,14 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Bistro Luxe Desktop Experience"
+      "label": "Shinmen Desktop Experience"
     },
     {
       "src": "/screenshot-narrow.png",
       "sizes": "375x812",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Bistro Luxe Mobile Experience"
+      "label": "Shinmen Mobile Experience"
     }
   ],
   "related_applications": [],
