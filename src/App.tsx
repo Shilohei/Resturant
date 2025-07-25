@@ -3,6 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { useCurrencyUpdater } from "@/hooks/useCurrencyUpdater";
 import Navbar from "@/components/navbar/Navbar";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -12,8 +13,15 @@ import SettingsPage from "./pages/SettingsPage";
 
 const queryClient = new QueryClient();
 
+// Currency updater component
+const CurrencyUpdater = () => {
+  useCurrencyUpdater();
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <CurrencyUpdater />
     <ThemeProvider defaultTheme="dark" storageKey="restaurant-ui-theme">
       <TooltipProvider>
         <Sonner />

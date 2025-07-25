@@ -7,24 +7,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Users, Phone, Mail, Star } from "lucide-react";
 import { toast } from "sonner";
+import PriceDisplay from "@/components/ui/price-display";
 
 interface TimeSlot {
   time: string;
   available: boolean;
   premium?: boolean;
+  surcharge?: number;
 }
 
 const timeSlots: TimeSlot[] = [
-  { time: "5:00 PM", available: true },
+  { time: "5:00 PM", available: true, surcharge: 0 },
   { time: "5:30 PM", available: false },
-  { time: "6:00 PM", available: true, premium: true },
-  { time: "6:30 PM", available: true },
-  { time: "7:00 PM", available: true, premium: true },
-  { time: "7:30 PM", available: true },
-  { time: "8:00 PM", available: true, premium: true },
+  { time: "6:00 PM", available: true, premium: true, surcharge: 10 },
+  { time: "6:30 PM", available: true, surcharge: 5 },
+  { time: "7:00 PM", available: true, premium: true, surcharge: 15 },
+  { time: "7:30 PM", available: true, surcharge: 5 },
+  { time: "8:00 PM", available: true, premium: true, surcharge: 10 },
   { time: "8:30 PM", available: false },
-  { time: "9:00 PM", available: true },
-  { time: "9:30 PM", available: true },
+  { time: "9:00 PM", available: true, surcharge: 0 },
+  { time: "9:30 PM", available: true, surcharge: 0 },
 ];
 
 export const Reservations = () => {
@@ -203,6 +205,11 @@ export const Reservations = () => {
                           {slot.time}
                           {slot.premium && (
                             <Star size={12} className="inline ml-1" />
+                          )}
+                          {slot.surcharge && slot.surcharge > 0 && (
+                            <div className="text-xs mt-1">
+                              +<PriceDisplay price={slot.surcharge} size="sm" />
+                            </div>
                           )}
                         </button>
                       ))}

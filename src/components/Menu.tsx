@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Leaf } from "lucide-react";
+import PriceDisplay from "@/components/ui/price-display";
 import menuSteak from "@/assets/menu-steak.jpg";
 import menuPasta from "@/assets/menu-pasta.jpg";
 import { MenuItem } from "@/types/menu.types";
@@ -181,7 +182,7 @@ export const Menu = () => {
                     </div>
                   )}
                   <div className="absolute top-4 right-4 bg-charcoal/80 backdrop-blur-sm text-gold px-3 py-1 rounded-full font-semibold">
-                    ${item.price}
+                    <PriceDisplay price={item.price} size="sm" className="text-gold" />
                   </div>
                 </div>
               )}
@@ -193,9 +194,7 @@ export const Menu = () => {
                     {item.name}
                   </h3>
                   {!item.image && (
-                    <span className="text-2xl font-cormorant font-bold text-gold">
-                      ${item.price}
-                    </span>
+                    <PriceDisplay price={item.price} size="lg" className="text-gold font-cormorant" />
                   )}
                 </div>
 

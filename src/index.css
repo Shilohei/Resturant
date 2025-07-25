@@ -93,6 +93,7 @@
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
   }
 
   ::-webkit-scrollbar-track {
@@ -106,6 +107,42 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--gold-dark));
+  }
+
+  /* Responsive utilities */
+  .container-responsive {
+    @apply w-full mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .grid-responsive {
+    @apply grid gap-4 sm:gap-6 lg:gap-8;
+  }
+
+  .text-responsive {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+
+  /* Mobile-first breakpoint utilities */
+  .mobile-only {
+    @apply block sm:hidden;
+  }
+
+  .tablet-up {
+    @apply hidden sm:block;
+  }
+
+  .desktop-up {
+    @apply hidden lg:block;
+  }
+
+  /* Improved focus states for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
+  }
+
+  /* Currency transition animations */
+  .currency-transition {
+    @apply transition-all duration-300 ease-in-out;
   }
 }
 
@@ -153,6 +190,33 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+
+  /* Responsive grid utilities */
+  .grid-auto-fit {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .grid-auto-fill {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  /* Mobile navigation improvements */
+  .mobile-nav-item {
+    @apply block w-full text-left px-4 py-3 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-all duration-200;
+  }
+
+  /* Settings page responsive cards */
+  .settings-card {
+    @apply bg-card border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300;
+  }
+
+  .settings-card-header {
+    @apply p-4 sm:p-6 border-b border-border;
+  }
+
+  .settings-card-content {
+    @apply p-4 sm:p-6;
   }
 }
 

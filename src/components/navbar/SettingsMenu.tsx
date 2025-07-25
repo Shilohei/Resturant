@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
 import {
   Dialog,
@@ -13,10 +15,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Settings, Gauge, DollarSign, Package, Map as MapIcon, User, Bell, Accessibility, CreditCard, Truck, Utensils, Users } from 'lucide-react';
+import { 
+  Settings, 
+  Gauge, 
+  Package, 
+  Map as MapIcon, 
+  User, 
+  Bell, 
+  Accessibility, 
+  CreditCard, 
+  Truck, 
+  Utensils, 
+  Users,
+  Smartphone,
+  Monitor
+} from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import PerformanceStats from './PerformanceStats';
-import CurrencySelector from './CurrencySelector';
 import OrderTracking from './OrderTracking';
 import InteractiveMap from './InteractiveMap';
 import UserSettings from './UserSettings';
@@ -26,8 +41,10 @@ import PaymentAndSecuritySettings from './PaymentAndSecuritySettings';
 import DeliveryPreferences from './DeliveryPreferences';
 import FoodPreferences from './FoodPreferences';
 import SocialAndCommunity from './SocialAndCommunity';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const SettingsMenu = () => {
+  const isMobile = useIsMobile();
   const [isPerformanceModalOpen, setIsPerformanceModalOpen] = useState(false);
   const [isOrderTrackingModalOpen, setIsOrderTrackingModalOpen] = useState(false);
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
@@ -39,77 +56,139 @@ const SettingsMenu = () => {
   const [isFoodPreferencesModalOpen, setIsFoodPreferencesModalOpen] = useState(false);
   const [isSocialAndCommunityModalOpen, setIsSocialAndCommunityModalOpen] = useState(false);
 
+  const iconSize = isMobile ? "h-4 w-4" : "h-5 w-5";
+
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <div className="inline-flex items-center justify-center rounded-md text-sm font-medium h-10 w-10 hover:bg-accent hover:text-accent-foreground cursor-pointer">
-            <Settings className="h-5 w-5 text-white" />
-          </div>
+          <Button variant="ghost" size={isMobile ? "sm" : "default"} className="relative">
+            <Settings className={iconSize} />
+            {isMobile && <span className="sr-only">Settings</span>}
+            {!isMobile && <span className="ml-2">Settings</span>}
+          </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuContent align="end" className="w-64 max-h-[80vh] overflow-y-auto">
+          <DropdownMenuLabel className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Settings & Preferences
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          
+          {/* User & Account */}
           <DropdownMenuItem onSelect={() => setIsUserSettingsModalOpen(true)}>
             <User className="mr-2 h-4 w-4" />
-            <span>User Profile</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setIsNotificationSettingsModalOpen(true)}>
-            <Bell className="mr-2 h-4 w-4" />
-            <span>Notifications</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setIsAccessibilitySettingsModalOpen(true)}>
-            <Accessibility className="mr-2 h-4 w-4" />
-            <span>Accessibility</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setIsPaymentAndSecurityModalOpen(true)}>
-            <CreditCard className="mr-2 h-4 w-4" />
-            <span>Payment & Security</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setIsDeliveryPreferencesModalOpen(true)}>
-            <Truck className="mr-2 h-4 w-4" />
-            <span>Delivery Preferences</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setIsFoodPreferencesModalOpen(true)}>
-            <Utensils className="mr-2 h-4 w-4" />
-            <span>Food Preferences</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setIsSocialAndCommunityModalOpen(true)}>
-            <Users className="mr-2 h-4 w-4" />
-            <span>Social & Community</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-            <ThemeToggle />
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={() => setIsPerformanceModalOpen(true)}>
-            <Gauge className="mr-2 h-4 w-4" />
-            <span>Performance</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-            <div className="flex items-center justify-between w-full">
-              <div className="flex items-center">
-                <DollarSign className="mr-2 h-4 w-4" />
-                <span>Currency</span>
-              </div>
-              <CurrencySelector />
+            <div className="flex-1">
+              <div className="font-medium">User Profile</div>
+              <div className="text-xs text-muted-foreground">Personal info & preferences</div>
             </div>
           </DropdownMenuItem>
+          
+          {/* Notifications */}
+          <DropdownMenuItem onSelect={() => setIsNotificationSettingsModalOpen(true)}>
+            <Bell className="mr-2 h-4 w-4" />
+            <div className="flex-1">
+              <div className="font-medium">Notifications</div>
+              <div className="text-xs text-muted-foreground">Alerts & communication</div>
+            </div>
+          </DropdownMenuItem>
+          
           <DropdownMenuSeparator />
+          
+          {/* Accessibility */}
+          <DropdownMenuItem onSelect={() => setIsAccessibilitySettingsModalOpen(true)}>
+            <Accessibility className="mr-2 h-4 w-4" />
+            <div className="flex-1">
+              <div className="font-medium">Accessibility</div>
+              <div className="text-xs text-muted-foreground">Display & usability options</div>
+            </div>
+          </DropdownMenuItem>
+          
+          {/* Payment */}
+          <DropdownMenuItem onSelect={() => setIsPaymentAndSecurityModalOpen(true)}>
+            <CreditCard className="mr-2 h-4 w-4" />
+            <div className="flex-1">
+              <div className="font-medium">Payment & Security</div>
+              <div className="text-xs text-muted-foreground">Cards & security settings</div>
+            </div>
+          </DropdownMenuItem>
+          
+          <DropdownMenuSeparator />
+          
+          {/* Delivery & Food */}
+          <DropdownMenuItem onSelect={() => setIsDeliveryPreferencesModalOpen(true)}>
+            <Truck className="mr-2 h-4 w-4" />
+            <div className="flex-1">
+              <div className="font-medium">Delivery</div>
+              <div className="text-xs text-muted-foreground">Delivery preferences</div>
+            </div>
+          </DropdownMenuItem>
+          
+          <DropdownMenuItem onSelect={() => setIsFoodPreferencesModalOpen(true)}>
+            <Utensils className="mr-2 h-4 w-4" />
+            <div className="flex-1">
+              <div className="font-medium">Food Preferences</div>
+              <div className="text-xs text-muted-foreground">Dietary & cuisine preferences</div>
+            </div>
+          </DropdownMenuItem>
+          
+          <DropdownMenuItem onSelect={() => setIsSocialAndCommunityModalOpen(true)}>
+            <Users className="mr-2 h-4 w-4" />
+            <div className="flex-1">
+              <div className="font-medium">Social & Community</div>
+              <div className="text-xs text-muted-foreground">Social features & sharing</div>
+            </div>
+          </DropdownMenuItem>
+          
+          <DropdownMenuSeparator />
+          
+          {/* Theme Toggle */}
+          <div className="px-2 py-1.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {isMobile ? <Smartphone className="h-4 w-4" /> : <Monitor className="h-4 w-4" />}
+                <span className="text-sm font-medium">Theme</span>
+              </div>
+              <ThemeToggle />
+            </div>
+          </div>
+          
+          <DropdownMenuSeparator />
+          
+          {/* Tools & Utilities */}
           <DropdownMenuItem onSelect={() => setIsOrderTrackingModalOpen(true)}>
             <Package className="mr-2 h-4 w-4" />
-            <span>Order Tracking</span>
+            <div className="flex-1">
+              <div className="font-medium">Order Tracking</div>
+              <div className="text-xs text-muted-foreground">Track your orders</div>
+            </div>
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          
           <DropdownMenuItem onSelect={() => setIsMapModalOpen(true)}>
             <MapIcon className="mr-2 h-4 w-4" />
-            <span>Interactive Map</span>
+            <div className="flex-1">
+              <div className="font-medium">Interactive Map</div>
+              <div className="text-xs text-muted-foreground">Find nearby locations</div>
+            </div>
+          </DropdownMenuItem>
+          
+          <DropdownMenuSeparator />
+          
+          {/* Developer Tools */}
+          <DropdownMenuItem onSelect={() => setIsPerformanceModalOpen(true)}>
+            <Gauge className="mr-2 h-4 w-4" />
+            <div className="flex-1">
+              <div className="font-medium">Performance</div>
+              <div className="text-xs text-muted-foreground">App performance metrics</div>
+            </div>
+            <Badge variant="secondary" className="text-xs">Dev</Badge>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
+      {/* Modal Dialogs */}
       <Dialog open={isPerformanceModalOpen} onOpenChange={setIsPerformanceModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Performance Statistics</DialogTitle>
           </DialogHeader>
@@ -118,7 +197,7 @@ const SettingsMenu = () => {
       </Dialog>
 
       <Dialog open={isOrderTrackingModalOpen} onOpenChange={setIsOrderTrackingModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Order Tracking</DialogTitle>
           </DialogHeader>
@@ -127,7 +206,7 @@ const SettingsMenu = () => {
       </Dialog>
 
       <Dialog open={isMapModalOpen} onOpenChange={setIsMapModalOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Interactive Map</DialogTitle>
           </DialogHeader>
@@ -136,7 +215,7 @@ const SettingsMenu = () => {
       </Dialog>
 
       <Dialog open={isUserSettingsModalOpen} onOpenChange={setIsUserSettingsModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>User Profile & Personalization</DialogTitle>
           </DialogHeader>
@@ -145,7 +224,7 @@ const SettingsMenu = () => {
       </Dialog>
 
       <Dialog open={isNotificationSettingsModalOpen} onOpenChange={setIsNotificationSettingsModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Advanced Notification Settings</DialogTitle>
           </DialogHeader>
@@ -154,7 +233,7 @@ const SettingsMenu = () => {
       </Dialog>
 
       <Dialog open={isAccessibilitySettingsModalOpen} onOpenChange={setIsAccessibilitySettingsModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Accessibility & Usability</DialogTitle>
           </DialogHeader>
@@ -163,7 +242,7 @@ const SettingsMenu = () => {
       </Dialog>
 
       <Dialog open={isPaymentAndSecurityModalOpen} onOpenChange={setIsPaymentAndSecurityModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Payment & Security</DialogTitle>
           </DialogHeader>
@@ -172,7 +251,7 @@ const SettingsMenu = () => {
       </Dialog>
 
       <Dialog open={isDeliveryPreferencesModalOpen} onOpenChange={setIsDeliveryPreferencesModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Delivery Preferences</DialogTitle>
           </DialogHeader>
@@ -181,7 +260,7 @@ const SettingsMenu = () => {
       </Dialog>
 
       <Dialog open={isFoodPreferencesModalOpen} onOpenChange={setIsFoodPreferencesModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Restaurant & Food Preferences</DialogTitle>
           </DialogHeader>
@@ -190,7 +269,7 @@ const SettingsMenu = () => {
       </Dialog>
 
       <Dialog open={isSocialAndCommunityModalOpen} onOpenChange={setIsSocialAndCommunityModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Social & Community</DialogTitle>
           </DialogHeader>

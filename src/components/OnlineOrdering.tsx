@@ -12,6 +12,7 @@ import { ShoppingCart, Plus, Minus, Star, Clock, Leaf, Flame, MapPin, CreditCard
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import PexelsImage from "@/components/PexelsImage";
+import PriceDisplay from "@/components/ui/price-display";
 
 interface MenuItem {
   id: string;
@@ -287,7 +288,7 @@ export const OnlineOrdering = () => {
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
                       <CardTitle className="text-cream text-lg">{item.name}</CardTitle>
-                      <span className="text-gold font-bold text-lg">${item.price}</span>
+                      <PriceDisplay price={item.price} size="lg" className="text-gold" />
                     </div>
                   </CardHeader>
                   
@@ -398,21 +399,25 @@ export const OnlineOrdering = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>Subtotal</span>
-                      <span>${getTotalPrice().toFixed(2)}</span>
+                      <PriceDisplay price={getTotalPrice()} />
                     </div>
                     <div className="flex justify-between">
                       <span>Tax</span>
-                      <span>${(getTotalPrice() * 0.08).toFixed(2)}</span>
+                      <PriceDisplay price={getTotalPrice() * 0.08} />
                     </div>
                     <div className="flex justify-between">
                       <span>Delivery Fee</span>
-                      <span>{orderDetails.type === 'delivery' ? '$4.99' : 'Free'}</span>
+                      <span>{orderDetails.type === 'delivery' ? <PriceDisplay price={4.99} /> : 'Free'}</span>
                     </div>
                     <Separator className="bg-warm-gray/20" />
                     <div className="flex justify-between font-bold text-lg">
                       <span>Total</span>
                       <span className="text-gold">
-                        ${(getTotalPrice() * 1.08 + (orderDetails.type === 'delivery' ? 4.99 : 0)).toFixed(2)}
+                        <PriceDisplay 
+                          price={getTotalPrice() * 1.08 + (orderDetails.type === 'delivery' ? 4.99 : 0)} 
+                          size="lg"
+                          className="text-gold"
+                        />
                       </span>
                     </div>
                     <div className="text-sm text-warm-gray">
@@ -543,7 +548,11 @@ export const OnlineOrdering = () => {
                       disabled={isCheckingOut || !orderDetails.customerInfo.name || !orderDetails.customerInfo.phone}
                       className="w-full bg-gold text-charcoal hover:bg-gold/90"
                     >
-                      {isCheckingOut ? "Processing..." : `Place Order - $${(getTotalPrice() * 1.08 + (orderDetails.type === 'delivery' ? 4.99 : 0)).toFixed(2)}`}
+                      {isCheckingOut ? "Processing..." : (
+                        <span className="flex items-center gap-2">
+                          Place Order - <PriceDisplay price={getTotalPrice() * 1.08 + (orderDetails.type === 'delivery' ? 4.99 : 0)} />
+                        </span>
+                      )}
                     </Button>
                   </div>
                 </>
